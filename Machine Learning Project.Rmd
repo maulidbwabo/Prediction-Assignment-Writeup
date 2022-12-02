@@ -9,7 +9,16 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Prediction Assignment Writeup
+## Executive Summary 
+For years, the athletes have used electronics devices such as Jawbone up, Fuel Band as well as Fit bit. Of course, these devices are capable of collecting large amount of data from users. The correct measurement for the athletes is important for the self improvement and the health as well. Understanding how well they do it is critical to distill eating behavior and other attitudes embedded to have a healthier life. To establish the pattern of the healthy fitness behavior have a profoundly effects on how to do it well. Regarding to this project, the main objective is to use the data of accelerometers  on the belt, forearm, arm, and dumbbell. The project focus to six participants only. Indeed, Participants have been ask to perform w barbell lifts correctly and incorrectly in 5 different ways. Therefore,The goal of this project is to predict the manner in which they did the exercise. This is the classe variable in the training set  
+# Description of the data
+In this project, the outcome variable is classe, I have transformed this variable into five level. The six people who have been involved asked to perform the unilateral dumbbell curl in a five numerous occasion: 
+1. exactly according to the specification (Class A)
+2. throwing the elbows to the front (Class B)
+3. lifting the dumbbell only halfway (Class C)
+4. lowering the dumbbell only halfway (Class D)
+5. throwing the hips to the front (Class E)
+# The initial data configuration before the downstream analysis
 ```{r}
 #Data variables
 training.file   = './data/pml-training.csv'
@@ -64,12 +73,14 @@ if(!IsRpartPlotInstalled){
 # Set seed for reproducability
 set.seed(9999)
 ```
-
+#Data Cleaning and Processing 
+At this stage the project were keen interested on how to remove the missing values(NA). To proceed with the NA in this project would compromises the analysis pipeline. Thus, the project has taken the following steps, first, transformation, and second, the clean up, it played out in this way immediately after downloading the data sets. For example, Irrelevant columns such as user_name, raw_timestamp_part_1, raw_timestamp_part_2, cvtd_timestamp, new_window, and num_window (columns 1 to 7) will be removed in the subset. 
+The project named pml-training to orchestrate the training and testing sets. undoubtedly, the test sets will be used to predict and answer the 20 questions based on the trained model. 
 ```{r}
 download.file(training.url, training.file)
 download.file(test.cases.url,test.cases.file )
 ```
-
+removing the NA from the initial processed data to deeply examined the downstream analysis. 
 ```{r}
 training   <-read.csv(training.file, na.strings=c("NA","#DIV/0!", ""))
 testing <-read.csv(test.cases.file , na.strings=c("NA", "#DIV/0!", ""))
@@ -81,7 +92,8 @@ testing <-testing[,colSums(is.na(testing)) == 0]
 training <-training[,-c(1:7)]
 testing <-testing[,-c(1:7)]
 ```
-
+## Cross Validation
+The project in this section extend its analysis through the cross validation. To perform that, the project created the partition to obtained the training (75%) and test sets(25%). 
 ```{r}
 subSamples <- createDataPartition(y=training$classe, p=0.75, list=FALSE)
 subTraining <- training[subSamples, ] 
@@ -95,7 +107,10 @@ View(subTraining)
 subTraining$classe=as.factor(subTraining$classe)
 str(subTraining)
 ```
-
+##Out of sample errors
+The expected out-of-sample error will correspond to the quantity: 1-accuracy in the cross-validation data. Accuracy is the proportion of correct classified observation over the total sample in the subTesting data set. Expected accuracy is the expected accuracy in the out-of-sample data set (i.e. original testing data set). Thus, the expected value of the out-of-sample error will correspond to the expected number of missclassified observations/total observations in the Test data set, which is the quantity: 1-accuracy found from the cross-validation data set.
+##Prediction Models
+#Decision tree
 ```{r}
 # Fit model
 modFitDT <- rpart(classe ~ ., data=subTraining, method="class")
@@ -112,7 +127,7 @@ rpart.plot(modFitDT, main="Classification Tree", extra=102, under=TRUE, faclen=0
 ##Confusion Matrix 
 confusionMatrix(predictDT, subTesting$classe)
 ```
-
+#Random Forest
 ```{r}
 ##Random Forest
 # Fit model
@@ -121,3 +136,9 @@ modFitRF <- randomForest(classe ~ ., data=subTraining, method="class")
 predictRF <- predict(modFitRF, subTesting, type = "class")
 confusionMatrix(predictRF, subTesting$classe)
 ```
+## Discussion of the Results 
+# Results
+The confusion matrices show, that the Random Forest algorithm has outclassed decision trees. The accuracy for the Random Forest model was 0.995 (95% CI: (0.993, 0.997)) compared to 0.739 (95% CI: (0.727, 0.752)) for Decision Tree model. following these accuracy scores between the two constructed model, the random Forest model is choosen.
+# Out of sample errors
+The expected out-of-sample error is estimated at 0.005, or 0.5%. The expected out-of-sample error is calculated as 1 - accuracy for predictions made against the cross-validation set. The project  test data set has 20 cases. But the  an accuracy above 99% on this project cross-validation data sets, the analysis confirmed that none of the sample in a test sets will be missclassified.
+
