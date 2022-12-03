@@ -116,8 +116,8 @@ The expected out-of-sample error will correspond to the quantity: 1-accuracy in 
 modFitDT <- rpart(classe ~ ., data=subTraining, method="class")
 # Perform prediction
 predictDT <- predict(modFitDT, subTesting, type = "class")
+head(predictDT)
 ```
-
 ```{r}
 # Plot result
 rpart.plot(modFitDT, main="Classification Tree", extra=102, under=TRUE, faclen=0)
@@ -127,11 +127,34 @@ rpart.plot(modFitDT, main="Classification Tree", extra=102, under=TRUE, faclen=0
 ##Confusion Matrix 
 confusionMatrix(predictDT, subTesting$classe)
 ```
+
+```{r}
+## Model Accuracy 
+#Validation data comparison
+predictOnTrainMod <- predict(modFitDT, newdata = subTraining)
+mean(predictOnTrainMod == subTraining$classe)
+#Validation set
+predictOnTestMod <- predict(modFitDT, newdata = subTesting)
+mean(predictOnTestMod == subTesting$classe)
+```
 #Random Forest
 ```{r}
 ##Random Forest
 # Fit model
 modFitRF <- randomForest(classe ~ ., data=subTraining, method="class")
+modFitRF$importance
+modFitRF$confusion
+modFitRF$err.rate
+modFitRF$ntree
+```
+The project below has run our now usual checks to see how the final model performs on our test set and our validation set. It played out that the model performed better following the mean from the training and testing set. 
+```{r}
+#Validation data comparison
+predictOnTrainR <- predict(modFitRF, newdata = subTraining)
+mean( predictOnTrainR == subTraining$classe)
+#Validation set
+predictOnTest <- predict(modFitRF, newdata = subTesting)
+mean( predictOnTest == subTesting$classe)
 # Perform prediction
 predictRF <- predict(modFitRF, subTesting, type = "class")
 confusionMatrix(predictRF, subTesting$classe)
