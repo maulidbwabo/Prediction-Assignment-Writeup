@@ -110,6 +110,7 @@ head(subTraining)
 View(subTraining)
 subTraining$classe=as.factor(subTraining$classe)
 str(subTraining)
+plot(subTesting$classe)
 ```
 ##Out of sample errors
 The expected out-of-sample error will correspond to the quantity: 1-accuracy in the cross-validation data. Accuracy is the proportion of correct classified observation over the total sample in the subTesting data set. Expected accuracy is the expected accuracy in the out-of-sample data set (i.e. original testing data set). Thus, the expected value of the out-of-sample error will correspond to the expected number of missclassified observations/total observations in the Test data set, which is the quantity: 1-accuracy found from the cross-validation data set.
@@ -150,6 +151,8 @@ modFitRF$importance
 modFitRF$confusion
 modFitRF$err.rate
 modFitRF$ntree
+##Fancy ploting 
+fancyRpartPlot(modFitDT, main="Classification Tree", cex = 0.4)
 ```
 The project below has run our now usual checks to see how the final model performs on our test set and our validation set. It played out that the model performed better following the mean from the training and testing set. 
 ```{r}
