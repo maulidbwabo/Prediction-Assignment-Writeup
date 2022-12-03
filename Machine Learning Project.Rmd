@@ -158,6 +158,16 @@ mean( predictOnTest == subTesting$classe)
 # Perform prediction
 predictRF <- predict(modFitRF, subTesting, type = "class")
 confusionMatrix(predictRF, subTesting$classe)
+##Alternative function for calculating the confusion matrix
+confusionMatrix(predictRF, as.factor(subTesting$classe))
+```
+The project used the multi-class AUC to define the performance outcome from the two deployed machine learning model, the CART and Random Forest.
+```{r}
+##ROC curve
+mn.net <- nnet::multinom(subTraining$classe ~ ., subTraining)
+sub.predictions <- predict(mn.net, newdata=subTesting, type="prob")
+head(sub.predictions)
+multiclass.roc(subTesting$classe,sub.predictions)
 ```
 ## Discussion of the Results 
 # Results
