@@ -142,7 +142,7 @@ mean(predictOnTrainMod == subTraining$classe)
 predictOnTestMod <- predict(modFitDT, newdata = subTesting)
 mean(predictOnTestMod == subTesting$classe)
 ```
-#Random Forest
+#Random Forest and fancy plotting
 ```{r}
 ##Random Forest
 # Fit model
