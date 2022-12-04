@@ -87,9 +87,16 @@ testing <-read.csv(test.cases.file , na.strings=c("NA", "#DIV/0!", ""))
 training<-training[,colSums(is.na(training)) == 0]
 testing <-testing[,colSums(is.na(testing)) == 0]
 ```
-##Exploratory analysis
+##Exploratory data analysis[EDA]
 ```{r}
-plot(subTraining$classe, col="orange", main="Levels of the variable classe", xlab="classe levels", ylab="Frequency")
+qplot(accel_forearm_x, magnet_forearm_y, data = subTraining)
+qplot(log(accel_forearm_x), log(magnet_forearm_y), data = subTraining)
+qplot(accel_forearm_x,magnet_forearm_y , data = subTraining, alpha = I(1/200))
+qplot(accel_forearm_x,magnet_forearm_y , data = subTraining, alpha = I(1/100))
+qplot(accel_forearm_x,magnet_forearm_y , data = subTraining,alpha = I(1/100)) qplot(accel_forearm_x,magnet_forearm_y , data = subTraining, geom = c("point","smooth"))
+qplot(accel_forearm_x, magnet_dumbbell_y, data = subTraining, colour = factor(classe))
+b=qplot(accel_forearm_x, magnet_dumbbell_y, data = subTraining, colour = factor(classe))
+summary(b)
 ```
 
 ```{r}
